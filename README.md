@@ -1,348 +1,199 @@
-Nepali & English Number Plate Recognition using Deep Learning
+# Nepali & English Number Plate Recognition using Machine Learning
 
-A deep learning–based Automatic Number Plate Recognition (ANPR) system capable of recognizing English, Nepali digits, and compound Nepali characters from vehicle number plates.
+A ML–based Automatic Number Plate Recognition (ANPR) system designed to accurately recognize multilingual vehicle registration plates, including English alphabets, English digits, Nepali digits, and compound Nepali characters. Unlike conventional ANPR systems that are primarily limited to Latin scripts, this system addresses the additional complexity introduced by compound glyph structures and multilingual formatting found in Nepali number plates.
 
-This project implements a complete detection-to-recognition pipeline using YOLO-style bounding boxes and a Convolutional Neural Network (CNN) for character classification.
+The proposed framework implements a structured, modular detection-to-recognition pipeline. Character regions are first localized using YOLO-format bounding box annotations, enabling precise extraction of individual characters from full plate images. These cropped character images are then processed through a Convolutional Neural Network (CNN) trained for multi-class character classification. The architecture ensures robust feature extraction, spatial invariance, and accurate classification across diverse character sets.
 
-📌 Table of Contents
+By integrating object localization and deep learning–based classification, this project provides a scalable and extensible foundation for multilingual ANPR systems suitable for intelligent transportation and smart surveillance applications.
 
-Introduction
+---
 
-Why This Project
+# Introduction
 
-System Architecture
+Automatic Number Plate Recognition (ANPR) is a computer vision application that detects and extracts vehicle registration numbers from images or video streams.
 
-Dataset Structure
+Unlike traditional ANPR systems that focus only on English characters, this project supports:
 
-Preprocessing
+- English Alphabets (A–Z)
+- English Digits (0–9)
+- Nepali Digits
+- Compound Nepali Characters (e.g., का, ना, को, बा)
 
-Model Architecture
+The project is designed as a research-oriented, modular ANPR system that can be extended into real-time applications.
 
-Training Configuration
+---
 
-Results & Visualizations
+# Problem Statement
 
-Project Structure
+Nepali number plates present unique challenges:
 
-Installation
+- Multilingual structure
+- Compound characters
+- Diverse font styles
+- Limited publicly available datasets
 
-Usage
+Most existing ANPR implementations do not support compound Nepali characters.  
+This project addresses that gap using a CNN-based character classification approach.
 
-Applications
+---
 
-Limitations
+# System Architecture
 
-Future Improvements
-
-Conclusion
-
-Author
-
-🧠 Introduction
-
-Automatic Number Plate Recognition (ANPR) is a computer vision application that detects and extracts vehicle registration numbers from images or video.
-
-Unlike most ANPR systems that focus only on English characters, this project supports:
-
-English alphabets (A–Z)
-
-English digits (0–9)
-
-Nepali digits
-
-Compound Nepali characters (e.g., का, ना, को, बा, etc.)
-
-The system is designed for academic research and can be extended for real-world traffic and smart city applications.
-
-🎯 Why This Project
-
-Nepali number plates contain:
-
-Multilingual characters
-
-Compound glyph structures
-
-Unique formatting patterns
-
-Most publicly available ANPR systems do not support Nepali compound characters.
-This project bridges that gap using a CNN-based character recognition model.
-
-🏗 System Architecture
-
-The pipeline follows two main stages:
+The system follows a two-stage pipeline:
 
 Full Plate Image
-        ↓
-Character Detection (YOLO Labels)
-        ↓
-Character Cropping & Normalization
-        ↓
+ 
+↓
+
+Character Detection (YOLO Label Boxes)
+
+↓
+
+Character Cropping & Preprocessing
+
+↓
+
 CNN Character Classification
-        ↓
-Final Plate Text Output
 
-Stage 1: Character Detection
+↓
 
-Uses YOLO-format label files
+Left-to-Right Character Concatenation
 
-Extracts bounding boxes for each character
+↓
 
-Stage 2: Character Recognition
+Final Recognized Plate Number
 
-Cropped characters resized to 48×48
+---
 
-Passed through trained CNN model
+# Dataset Structure
 
-Predicted characters combined left-to-right
+## Character-Level Dataset
 
-📂 Dataset Structure
-1️⃣ Character-Level Training Dataset
-MainDataset/
-├── A/
-├── B/
-├── 0/
-├── 1/
-├── ka/
-├── na/
-├── ko/
-├── बा/
-├── न/
-└── ...
+<img width="270" height="404" alt="Screenshot 2026-02-11 102310" src="https://github.com/user-attachments/assets/6014ea01-e05c-4305-9876-dc6549ec4a0a" />
+<img width="283" height="87" alt="Screenshot 2026-02-11 103025" src="https://github.com/user-attachments/assets/67c189a1-5953-447e-995d-ba247466fb4e" />
 
 
-Each folder represents one character class
+- Each folder represents a single character class
+- Grayscale images
+- Resized to 48×48
+- Total Classes: 53
+- Loaded Images: 30,114
 
-Grayscale images
+---
 
-Resized to 48 × 48
+## Full Plate Dataset
 
-Total Classes: 53
+<img width="253" height="254" alt="Screenshot 2026-02-11 102352" src="https://github.com/user-attachments/assets/5d8e4800-f0c4-4f6d-b32c-d70c48f3ba95" />
 
-Loaded Images: 3567
+---
 
-2️⃣ Full Plate Dataset
-Dataset/
-├── Images/
-│   ├── image1.jpg
-│   └── image2.jpg
-├── labels/
-│   ├── image1.txt
-│   └── image2.txt
+# Data Preprocessing
 
+### Character Dataset Processing
+- Loaded using PIL (Unicode safe)
+- Converted to grayscale
+- Corrupted files skipped
+- Resized to 48×48
+- Normalized to range [0,1]
+- Labels converted to one-hot encoding
 
-YOLO Label Format:
+### Plate Image Processing
+- YOLO bounding boxes converted to pixel coordinates
+- Character regions cropped
+- Resized and normalized
+- Sorted by x-coordinate (left to right)
 
-class_id x_center y_center width height
+---
 
+# Model Architecture
 
-These labels allow extraction of individual characters from number plate images.
+<img width="787" height="791" alt="Model" src="https://github.com/user-attachments/assets/992f0110-9a5b-4cdb-92c2-00be86477fc1" />
 
-⚙ Preprocessing
-Character Dataset
+---
 
-Loaded using PIL (Unicode-safe)
+# Training Configuration
 
-Converted to grayscale
+- Optimizer: Adam
+- Loss Function: Categorical Crossentropy
+- Metric: Accuracy
+- Epochs: 15
+- Batch Size: 64
+- Train/Test Split: 80% / 20%
 
-Corrupted files skipped
+---
 
-Resized to 48×48
+# Results
 
-Normalized to range [0,1]
+### Training Visualizations
 
-Labels one-hot encoded
+Model Performance:
 
-Plate Images
+<img width="1189" height="390" alt="Output" src="https://github.com/user-attachments/assets/5741f76b-2acb-451f-a090-4c01daaf8a87" />
 
-Read using OpenCV
+Character Recognition:
 
-Bounding boxes converted from YOLO format
+<img width="1063" height="304" alt="CharRecognition" src="https://github.com/user-attachments/assets/57ec0b7d-9f2f-4801-8dae-90642dc510d3" />
 
-Cropped characters resized and normalized
+<img width="1037" height="264" alt="Screenshot 2026-02-11 102744" src="https://github.com/user-attachments/assets/c0dde2f5-3d49-4b2a-9f7a-920ca58e5782" />
 
-Sorted left-to-right before prediction
 
-🤖 Model Architecture
+Character Detection:
 
-Input: 48 × 48 × 1
+<img width="640" height="230" alt="CharDetection" src="https://github.com/user-attachments/assets/d45fb9df-2f23-46b4-9ed4-f3fedb5a723c" />
 
-CNN Layers:
+<img width="728" height="498" alt="Screenshot 2026-02-11 102726" src="https://github.com/user-attachments/assets/9aeb4a4d-79cb-4fc1-9a14-3c17837c940b" />
 
-Conv2D (32 filters, 3×3, ReLU)
 
-MaxPooling (2×2)
+Confusion Matrix:
 
-Conv2D (64 filters, 3×3, ReLU)
+<img width="576" height="519" alt="ConfusionMatrix" src="https://github.com/user-attachments/assets/388d4cb9-a1e4-46d5-bdb2-ffb50c2ebd90" />
 
-MaxPooling (2×2)
 
-Conv2D (128 filters, 3×3, ReLU)
+---
 
-Flatten
+# Applications
 
-Dense (256 units, ReLU)
+This system can be used in:
 
-Dropout (0.5)
+- Traffic Monitoring Systems
+- Smart City Infrastructure
+- Toll Booth Automation
+- Parking Management Systems
+- Law Enforcement Vehicle Tracking
+- CCTV Surveillance Systems
+- Automated Entry & Exit Systems
 
-Dense (Softmax – 53 classes)
+---
 
-🏋️ Training Configuration
+# Limitations
 
-Optimizer: Adam
+- Detection depends on YOLO label files
+- Not implemented for real-time video yet
+- Sensitive to motion blur and extreme lighting
+- Compound characters require larger dataset for higher accuracy
+- Limited dataset size may affect generalization
 
-Loss: Categorical Crossentropy
+---
 
-Metric: Accuracy
+# Future Improvements
 
-Epochs: 15
+- Integrate YOLOv8 for automatic character detection
+- Implement CRNN + CTC for sequence recognition
+- Add real-time video processing
+- Apply data augmentation
+- Deploy as web application
+- Improve compound Nepali character accuracy
 
-Batch size: 64
+---
 
-Train/Test Split: 80/20
+# Conclusion
 
-📊 Results & Visualizations
-📌 Character Distribution
+This project presents a robust and scalable multilingual Automatic Number Plate Recognition (ANPR) system built using deep learning methodologies. By integrating structured character localization with CNN-based classification, the system successfully addresses the complexities associated with recognizing English characters, Nepali digits, and compound Nepali characters within a unified framework.
 
-Add screenshot here
+Unlike traditional ANPR implementations that are limited to single-language datasets, this solution demonstrates the feasibility of deploying multilingual recognition models in real-world transportation environments. The modular architecture ensures flexibility — allowing seamless integration with detection models, surveillance systems, or API-based deployment pipelines.
 
-![Class Distribution](images/class_distribution.png)
+From a technical perspective, the project establishes a reliable detection-to-recognition workflow that can serve as a foundation for further research and commercial applications. From an industry standpoint, the system offers practical value for smart city infrastructure, automated toll systems, parking automation, vehicle access control, and law enforcement monitoring.
 
-📌 Training Samples
+While future improvements such as real-time inference optimization, automatic detection integration, and dataset expansion can further enhance performance, the current implementation provides a solid, scalable baseline for multilingual ANPR systems tailored to regional requirements.
 
-Add screenshot here
-
-![Training Samples](images/training_samples.png)
-
-📌 Accuracy vs Epoch
-
-Add screenshot here
-
-![Accuracy Plot](images/accuracy_plot.png)
-
-📌 Loss vs Epoch
-
-Add screenshot here
-
-![Loss Plot](images/loss_plot.png)
-
-📌 Confusion Matrix
-
-Add screenshot here
-
-![Confusion Matrix](images/confusion_matrix.png)
-
-📌 Detection Example
-
-Add screenshot here
-
-![Detection](images/detection_boxes.png)
-
-📌 Extracted Characters
-
-Add screenshot here
-
-![Extracted Characters](images/extracted_characters.png)
-
-📌 Final Output Example
-
-Example:
-
-Recognized Number Plate: बा ३४५६
-
-
-Add screenshot here
-
-![Final Output](images/final_output.png)
-
-📁 Project Structure
-NumberPlateRecognition/
-│
-├── MainDataset/
-├── Dataset/
-│   ├── Images/
-│   ├── labels/
-│
-├── models/
-│   └── char_cnn.h5
-│
-├── images/   # Visualization screenshots
-│
-├── train.py
-├── detect_and_recognize.py
-└── README.md
-
-🛠 Installation
-
-Install required libraries:
-
-pip install tensorflow opencv-python pillow matplotlib scikit-learn
-
-▶ Usage
-1️⃣ Train Model
-
-Run training script to generate:
-
-models/char_cnn.h5
-
-2️⃣ Test on Image
-
-Provide:
-
-Plate image path
-
-Corresponding YOLO label file
-
-recognized = recognize_plate_from_path(image_path, label_path)
-print("Recognized Plate:", recognized)
-
-🌍 Applications
-
-Traffic Monitoring Systems
-
-Smart Cities
-
-Toll Booth Automation
-
-Parking Management
-
-Law Enforcement
-
-Vehicle Access Control Systems
-
-CCTV Surveillance
-
-⚠ Limitations
-
-Depends on YOLO label files for detection
-
-Not real-time yet
-
-Performance depends on dataset size
-
-Sensitive to blur and extreme lighting
-
-Compound Nepali characters require larger datasets for high accuracy
-
-🚀 Future Improvements
-
-Integrate YOLOv8 for automatic detection
-
-Replace CNN with CRNN + CTC for sequence recognition
-
-Real-time video processing
-
-Data augmentation for robustness
-
-Web app deployment
-
-Mobile-optimized inference model
-
-Improve compound character accuracy
-
-🧾 Conclusion
-
-This project demonstrates a complete multilingual ANPR system using deep learning. It successfully handles English and Nepali compound characters using a CNN-based classification pipeline.
-
-The modular design allows easy extension to real-time systems and further research applications.
-
-This project forms a strong foundation for intelligent transportation and smart surveillance systems.
+Overall, this work demonstrates how deep learning can be effectively applied to localized transportation challenges, bridging the gap between academic research and industry-ready intelligent vehicle recognition solutions.
