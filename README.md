@@ -1,4 +1,4 @@
-# Nepali & English Number Plate Recognition using Machine Learning
+# Nepali Plate Recognition using Machine Learning
 
 A ML–based Automatic Number Plate Recognition (ANPR) system designed to accurately recognize multilingual vehicle registration plates, including English alphabets, English digits, Nepali digits, and compound Nepali characters. Unlike conventional ANPR systems that are primarily limited to Latin scripts, this system addresses the additional complexity introduced by compound glyph structures and multilingual formatting found in Nepali number plates.
 
